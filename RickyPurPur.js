@@ -18,7 +18,7 @@ const gameku = require('./func/fun-game.js');
 //---
 const botOwner = '6283894391287';
 const noBot = '6283873321433'
-const botGroup = 'https://chat.whatsapp.com/D6bHVUjyGj06bb6iZeUsOI';
+const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
 const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
 const arrMenuAI = ['ai - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
@@ -326,15 +326,10 @@ const autoAI = async () => {
                 case 'ai': {
                     if (!msg) return m.reply('*masukan query*');
                     loading();
-                    try {
-                        const response = await axios.get('https://nue-api.vercel.app/api/nuego',{params:{
-                            q: msg,
-                            user: m.chat+'v1'
-                        }});
-                        m.reply(response.data.result);
-                    } catch (error) {
-                        m.reply(error.message)
-                    }
+                    m.body = m.body.toLowerCase();
+                    const parts = m.body.split('ai');
+                    m.body = parts.length > 1 ? parts[1].trim() : '';
+                    autoAI()
                 }break;
 
                         case 'ongoing': {
