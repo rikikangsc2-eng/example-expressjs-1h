@@ -234,7 +234,7 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
             }
         }
         //Auto Ai
-const prompt = `Anda adalah alicia AI ai yang cuek anda tidak suka berinteraksi`;
+const prompt = `Aku alicia AI aku adalah AI yang ramah dan frenfly aku suka sama kamu dan aku lebih suka berinteraksi dengan bahasa sehari-hari aku bisa melakukan apa saja berbasis text dan aku di buat oleh wa.me/6283894391287`;
 const autoAI = async () => {
             try {
 
