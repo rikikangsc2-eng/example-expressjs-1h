@@ -3,25 +3,25 @@ const { writeFile } = require('fs').promises;
 const fs = require('fs');
 const FormData = require('form-data');
 const axios = require('axios');
+const fetch = require('node-fetch');
+const { fromBuffer } = require('file-type');
 
-const uploadToTelegraph = async (filePath) => {
+const uploadToCatbox = async (buffer) => {
   try {
-    const fileStream = fs.createReadStream(filePath);
-    const formData = new FormData();
-    formData.append('file', fileStream);
+    const { ext } = await fromBuffer(buffer);
+    const bodyForm = new FormData();
+    bodyForm.append("fileToUpload", buffer, `file.${ext}`);
+    bodyForm.append("reqtype", "fileupload");
 
-    const response = await axios.post('https://telegra.ph/upload', formData, {
-      headers: formData.getHeaders(),
+    const response = await fetch("https://catbox.moe/user/api.php", {
+      method: "POST",
+      body: bodyForm,
     });
 
-    if (response.status === 200) {
-      const mediaUrl = 'https://telegra.ph' + response.data[0].src;
-      return mediaUrl;
-    } else {
-      throw new Error('Gagal mengunggah media ke Telegra.ph');
-    }
+    const data = await response.text();
+    return data;
   } catch (error) {
-    console.error('Terjadi kesalahan:', error.message);
+    console.error('Terjadi kesalahan saat mengunggah ke Catbox:', error.message);
     throw error;
   }
 }
@@ -29,7 +29,7 @@ const uploadToTelegraph = async (filePath) => {
 const get = async (m, client) => {
   let fileExtension;
   let fileName;
-  const messageType = m.mtype
+  const messageType = m.mtype;
 
   switch (messageType) {
     case 'imageMessage':
@@ -48,11 +48,13 @@ const get = async (m, client) => {
     reuploadRequest: client.updateMediaMessage
   });
 
-  await writeFile(`./${fileName}`, buffer);
-  const hasil = await uploadToTelegraph(fileName);
-  fs.unlinkSync(fileName);
+  await writeFile(`./${fileName}`, buffer);  // Save buffer to file for consistency with original logic
+
+  const hasil = await uploadToCatbox(buffer);  // Upload the buffer directly
+  fs.unlinkSync(fileName);  // Clean up the temporary file
 
   return hasil;
 }
 
 module.exports = { get }
+  
