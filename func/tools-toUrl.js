@@ -46,7 +46,7 @@ const get = async (m, client) => {
   // Upload directly without saving to a file
   const hasil = await uploadToCustomAPI(buffer, fileName);
 
-  return hasil.files; // Assuming API response contains the 'files' field as a URL
+  return hasil.file; // Assuming API response contains the 'files' field as a URL
 }
 
 module.exports = { get }
