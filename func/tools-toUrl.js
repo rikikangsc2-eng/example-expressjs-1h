@@ -10,7 +10,7 @@ const uploadToCustomAPI = async (buffer, fileName) => {
     const form = new FormData();
     form.append('file', buffer, fileName); // Append the buffer directly
 
-    const response = await axios.post('https://poised-broad-koi.glitch.me/upload', form, {
+    const response = await axios.post('https://pakpurpur-nihbos-uploader-sementara-24jam.vercel.app/upload', form, {
       headers: form.getHeaders()
     });
 
