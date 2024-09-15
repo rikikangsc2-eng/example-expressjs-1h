@@ -3,25 +3,20 @@ const { writeFile } = require('fs').promises;
 const fs = require('fs');
 const FormData = require('form-data');
 const axios = require('axios');
-const fetch = require('node-fetch');
 const { fromBuffer } = require('file-type');
 
-const uploadToCatbox = async (buffer) => {
+const uploadToCustomAPI = async (buffer, fileName) => {
   try {
-    const { ext } = await fromBuffer(buffer);
-    const bodyForm = new FormData();
-    bodyForm.append("fileToUpload", buffer, `file.${ext}`);
-    bodyForm.append("reqtype", "fileupload");
+    const form = new FormData();
+    form.append('file', buffer, fileName); // Append the buffer directly
 
-    const response = await fetch("https://catbox.moe/user/api.php", {
-      method: "POST",
-      body: bodyForm,
+    const response = await axios.post('https://poised-broad-koi.glitch.me/upload', form, {
+      headers: form.getHeaders()
     });
 
-    const data = await response.text();
-    return data;
+    return response.data; // Return API response
   } catch (error) {
-    console.error('Terjadi kesalahan saat mengunggah ke Catbox:', error.message);
+    console.error('Terjadi kesalahan saat mengunggah ke API:', error.message);
     throw error;
   }
 }
@@ -34,11 +29,11 @@ const get = async (m, client) => {
   switch (messageType) {
     case 'imageMessage':
       fileExtension = 'jpeg';
-      fileName = 'tmp/user.jpeg';
+      fileName = 'user.jpeg';
       break;
     case 'videoMessage':
       fileExtension = 'mp4';
-      fileName = 'tmp/user.mp4';
+      fileName = 'user.mp4';
       break;
     default:
       throw new Error('Invalid messageType');
@@ -48,12 +43,10 @@ const get = async (m, client) => {
     reuploadRequest: client.updateMediaMessage
   });
 
-  await writeFile(`./${fileName}`, buffer);  // Save buffer to file for consistency with original logic
+  // Upload directly without saving to a file
+  const hasil = await uploadToCustomAPI(buffer, fileName);
 
-  const hasil = await uploadToCatbox(buffer);  // Upload the buffer directly
-  fs.unlinkSync(fileName);  // Clean up the temporary file
-
-  return hasil;
+  return hasil.files; // Assuming API response contains the 'files' field as a URL
 }
 
 module.exports = { get }
