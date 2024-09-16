@@ -29,11 +29,11 @@ const get = async (m, client) => {
   switch (messageType) {
     case 'imageMessage':
       fileExtension = 'jpeg';
-      fileName = `${m.pushName || m.sender}.jpeg`;
+      fileName = `user.jpeg`;
       break;
     case 'videoMessage':
       fileExtension = 'mp4';
-      fileName = `${m.pushName || m.sender}.mp4`;
+      fileName = `user.mp4`;
       break;
     default:
       throw new Error('Invalid messageType');
