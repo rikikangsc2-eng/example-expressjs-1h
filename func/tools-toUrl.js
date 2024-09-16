@@ -10,7 +10,7 @@ const uploadToCustomAPI = async (buffer, fileName) => {
     const form = new FormData();
     form.append('file', buffer, fileName); // Append the buffer directly
 
-    const response = await axios.post('https://pakpurpur-nihbos-uploader-sementara-24jam.vercel.app/upload', form, {
+    const response = await axios.post('https://poised-broad-koi.glitch.me/upload', form, {
       headers: form.getHeaders()
     });
 
@@ -29,11 +29,11 @@ const get = async (m, client) => {
   switch (messageType) {
     case 'imageMessage':
       fileExtension = 'jpeg';
-      fileName = 'user.jpeg';
+      fileName = `${m.pushName || m.sender}.jpeg`;
       break;
     case 'videoMessage':
       fileExtension = 'mp4';
-      fileName = 'user.mp4';
+      fileName = `${m.pushName || m.sender}.mp4`;
       break;
     default:
       throw new Error('Invalid messageType');
