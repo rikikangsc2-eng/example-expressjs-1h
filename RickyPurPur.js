@@ -270,8 +270,6 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
                  case 'jadwal': {
-                     if (!msg) return m.reply("Contoh *.jadwal senin*")
-    // Function to map Indonesian day names to English
     const mapDayToEnglish = (day) => {
         return day
             .replace(/minggu/i, 'sunday')
@@ -283,14 +281,10 @@ const autoAI = async () => {
             .replace(/sabtu/i, 'saturday');
     };
 
-    // Check if the user provided a day (optional)
-    let day = msg || 'monday';  // Default to Monday if no day is provided
-    
-    // Convert Indonesian day to English if necessary
+    let day = msg || 'monday';  
     day = mapDayToEnglish(day);
 
     try {
-        // Fetch the anime schedule from the Jikan API
         const response = await axios.get(`https://api.jikan.moe/v4/schedules?filter=${day}`);
         const animeList = response.data.data;
 
@@ -298,22 +292,23 @@ const autoAI = async () => {
             return m.reply(`Tidak ada anime yang tayang pada hari ${day}.`);
         }
 
-        // Create a list of anime names
         let listAnime = animeList.map((anime, index) => `${index + 1}. ${anime.title}`).join('\n');
-
-        // Store the anime data in buttonData
         const waktu = Date.now() + m.sender.split('@')[0];
         buttonDate[m.sender] = waktu;
         buttonData[m.sender] = animeList;
 
-        // Dynamically generate buttonText for interaction
         buttonText[m.sender] = {};
-        animeList.forEach((anime, index) => {
-            buttonText[m.sender][index + 1] = `const anime = buttonData[m.sender][${index}];
-client.sendImage(from, anime.images.jpg.image_url, \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`, mek`;
-});
 
-        // Send the list of anime names with instruction to reply with a number
+        for (let i = 0; i < Math.min(animeList.length, 30); i++) {
+            buttonText[m.sender][i + 1] = `async () => {
+                const anime = buttonData[m.sender][${i}];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`;
+        }
+
         m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
 
     } catch (error) {
