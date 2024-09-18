@@ -270,6 +270,7 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
                  case 'jadwal': {
+                     if (!msg) return m.reply("Contoh *.jadwal senin*")
     // Function to map Indonesian day names to English
     const mapDayToEnglish = (day) => {
         return day
