@@ -270,7 +270,7 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
                 case 'jadwal': {
-    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal sabtu` });
+    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
 
     const hari = msg.toLowerCase();
     const daysMap = {
@@ -286,64 +286,36 @@ const autoAI = async () => {
     if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
 
     const dayInEnglish = daysMap[hari];
-
+    
     try {
-        // Mengambil jadwal anime dari API Jikan berdasarkan hari
+        // Menggunakan API Jikan Moe untuk mengambil jadwal anime berdasarkan hari
         const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
         const animeList = response.data.data;
 
         if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
 
-        // Fungsi untuk memuat gambar
-        async function image(url) {
-            const { imageMessage } = await generateWAMessageContent({
-                image: { url }
-            }, {
-                upload: client.waUploadToServer
-            });
-            return imageMessage;
-        }
+        // Menyiapkan string untuk daftar anime
+        let animeSchedule = `*Jadwal Anime Update Hari ${hari.charAt(0).toUpperCase() + hari.slice(1)}:*\n\n`;
 
-        // Menyiapkan carousel cards untuk setiap anime
-        let cards = [];
-        for (const anime of animeList) {
-            const { title, images, episodes, airing, broadcast } = anime;
-            const thumbUrl = images.jpg.image_url || images.webp.image_url;
+        animeList.forEach((anime, index) => {
+            const { title, episodes, broadcast } = anime;
             const dayUpdate = broadcast.day || hari;
+            
+            animeSchedule += `*${index + 1}. ${title}*\n`;
+            animeSchedule += `Episode Terbaru: ${episodes || 'N/A'}\n`;
+            animeSchedule += `Update Setiap: ${dayUpdate}\n\n`;
+        });
 
-            // Membuat setiap card untuk anime
-            cards.push({
-                header: {
-                    imageMessage: await image(thumbUrl),
-                    hasMediaAttachment: true,
-                },
-                body: {
-                    text: `*Judul:* ${title}\n*Episode Terbaru:* ${episodes || 'N/A'}\n*Update Setiap:* ${dayUpdate}\n*Sedang Tayang:* ${airing ? 'Ya' : 'Tidak'}`
-                },
-            });
-        }
+        // Mengirimkan daftar anime dalam format string
+        await client.sendMessage(from, { text: animeSchedule });
 
-        // Membuat pesan carousel
-        let msg = generateWAMessageFromContent(
-            m.chat,
-            {
-                viewOnceMessage: {
-                    message: {
-                        interactiveMessage: {
-                            carouselMessage: {
-                                cards: cards, // Menggunakan cards yang sudah di-generate
-                                messageVersion: 1,
-                            }
-                        }
-                    }
-                }
-            },
-            {}
-        );
-
-        // Mengirimkan pesan carousel
-        await client.relayMessage(msg.key.remoteJid, msg.message, {
-            messageId: msg.key.id
+        // Mengirimkan satu thumbnail anime (anime pertama)
+        const firstAnime = animeList[0];
+        const thumbUrl = firstAnime.images.jpg.image_url || firstAnime.images.webp.image_url;
+        
+        await client.sendMessage(from, {
+            image: { url: thumbUrl },
+            caption: `*Judul:* ${firstAnime.title}\n*Episode Terbaru:* ${firstAnime.episodes || 'N/A'}\n*Update Setiap:* ${firstAnime.broadcast.day || hari}`
         });
 
     } catch (error) {
@@ -351,6 +323,7 @@ const autoAI = async () => {
         client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
     }
 }
+break;
 
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
