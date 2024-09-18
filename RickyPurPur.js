@@ -308,14 +308,17 @@ const autoAI = async () => {
         buttonDate[m.sender] = waktu;
         buttonData[m.sender] = animeList;
 
-        // Map the anime choices to buttonText for interaction
-        buttonText[m.sender] = animeList.reduce((acc, anime, index) => {
-            acc[(index + 1).toString()] = `client.sendMessage(m.chat, {
-                image: { url: buttonData[m.sender][${index}].images.jpg.image_url },
-                caption: '*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.'
-            }, { quoted: m });`;
-            return acc;
-        }, {});
+        // Dynamically generate buttonText for interaction
+        buttonText[m.sender] = {};
+        animeList.forEach((anime, index) => {
+            buttonText[m.sender][index + 1] = `async () => {
+                const anime = buttonData[m.sender][${index}];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`;
+        });
 
         // Send the list of anime names with instruction to reply with a number
         m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
@@ -325,8 +328,8 @@ const autoAI = async () => {
         m.reply('Terjadi kesalahan saat mengambil data dari API Jikan.');
     }
     break;
-}
-
+                 }
+                    
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
