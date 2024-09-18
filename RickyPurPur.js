@@ -269,7 +269,7 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
-                    case 'jadwal': {
+                 case 'jadwal': {
     // Function to map Indonesian day names to English
     const mapDayToEnglish = (day) => {
         return day
@@ -303,27 +303,30 @@ const autoAI = async () => {
         // Create a list of anime names
         let listAnime = animeList.map((anime, index) => `${index + 1}. ${anime.title}`).join('\n');
 
-        // Store the data for button interaction
+        // Store the anime data in buttonData
+        const waktu = Date.now() + m.sender.split('@')[0];
+        buttonDate[m.sender] = waktu;
+        buttonData[m.sender] = animeList;
+
+        // Map the anime choices to buttonText for interaction
         buttonText[m.sender] = animeList.reduce((acc, anime, index) => {
             acc[(index + 1).toString()] = `client.sendMessage(m.chat, {
-                image: { url: '${anime.images.jpg.image_url}' },
+                image: { url: buttonData[m.sender][${index}].images.jpg.image_url },
                 caption: '*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.'
             }, { quoted: m });`;
             return acc;
         }, {});
 
-        // Create button text for selection
-        const waktu = Date.now() + m.sender.split('@')[0];
-        buttonDate[m.sender] = waktu;
-
+        // Send the list of anime names with instruction to reply with a number
         m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
 
     } catch (error) {
         console.error(error);
         m.reply('Terjadi kesalahan saat mengambil data dari API Jikan.');
     }
-                    }
-                    
+    break;
+}
+
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
