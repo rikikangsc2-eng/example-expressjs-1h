@@ -270,56 +270,60 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
               case 'jadwal': {
-    const mapDayToEnglish = (day) => {
-        return day
-            .replace(/minggu/i, 'sunday')
-            .replace(/senin/i, 'monday')
-            .replace(/selasa/i, 'tuesday')
-            .replace(/rabu/i, 'wednesday')
-            .replace(/kamis/i, 'thursday')
-            .replace(/jumat/i, 'friday')
-            .replace(/sabtu/i, 'saturday');
+    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
+
+    const hari = msg.toLowerCase();
+    const daysMap = {
+        'senin': 'monday',
+        'selasa': 'tuesday',
+        'rabu': 'wednesday',
+        'kamis': 'thursday',
+        'jumat': 'friday',
+        'sabtu': 'saturday',
+        'minggu': 'sunday'
     };
 
-    if (!msg) return m.reply('Contoh *.jadwal minggu*');
-    
-    let day = mapDayToEnglish(msg);
+    if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
+
+    const dayInEnglish = daysMap[hari];
     
     try {
-        const response = await axios.get(`https://api.jikan.moe/v4/schedules?filter=${day}`);
+        // Menggunakan API Jikan Moe untuk mengambil jadwal anime berdasarkan hari
+        const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
         const animeList = response.data.data;
 
-        if (!animeList.length) {
-            return m.reply(`Tidak ada anime yang tayang pada hari ${day}.`);
-        }
+        if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
 
-        let listAnime = animeList.map((anime, index) => `${index + 1}. ${anime.title}`).join('\n');
-        const waktu = Date.now() + m.sender.split('@')[0];
-        buttonDate[m.sender] = waktu;
-        buttonData[m.sender] = animeList;
+        // Menyiapkan string untuk satu anime secara acak
+        const randomIndex = Math.floor(Math.random() * animeList.length);
+        const randomAnime = animeList[randomIndex];
 
-        let buttonTextString = '{';
-        for (let i = 0; i < Math.min(animeList.length, 30); i++) {
-            buttonTextString += `"${i + 1}": "async () => {
-                const anime = buttonData[m.sender][${i}];
-                await client.sendMessage(m.chat, {
-                    image: { url: anime.images.jpg.image_url },
-                    caption: "*\${anime.title}*\n\n*Genre:* \${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* \${anime.synopsis}\n*Status:* \${anime.status}\n*Episode terakhir:* \${anime.episodes_aired}\n*Total episode:* \${anime.episodes || 'N/A'}\n\nUpdate setiap hari \${day}."
-                }, { quoted: m });
-            }", `;
-        }
-        buttonTextString += '}';
+        let animeSchedule = `*Jadwal Anime Acak Hari ${hari.charAt(0).toUpperCase() + hari.slice(1)}:*\n\n`;
+        const { title, episodes, broadcast } = randomAnime;
+        const dayUpdate = broadcast.day || hari;
 
-        buttonText[m.sender] = JSON.parse(buttonTextString);
+        animeSchedule += `*${title}*\n`;
+        animeSchedule += `Episode Terbaru: ${episodes || 'N/A'}\n`;
+        animeSchedule += `Update Setiap: ${dayUpdate}\n\n`;
 
-        m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
+        // Mengirimkan jadwal anime secara acak
+        await client.sendMessage(from, { text: animeSchedule });
+
+        // Mengirimkan thumbnail anime acak
+        const thumbUrl = randomAnime.images.jpg.image_url || randomAnime.images.webp.image_url;
+
+        await client.sendMessage(from, {
+            image: { url: thumbUrl },
+            caption: `*Judul:* ${randomAnime.title}\n*Episode Terbaru:* ${randomAnime.episodes || 'N/A'}\n*Update Setiap:* ${randomAnime.broadcast.day || hari}`
+        });
 
     } catch (error) {
         console.error(error);
-        m.reply('Terjadi kesalahan saat mengambil data dari API Jikan.');
+        client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
     }
-    break;
 }
+break;
+
 
 
                 case 'gemini':{
