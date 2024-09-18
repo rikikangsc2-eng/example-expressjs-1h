@@ -309,8 +309,8 @@ const autoAI = async () => {
         buttonText[m.sender] = {};
         animeList.forEach((anime, index) => {
             buttonText[m.sender][index + 1] = `const anime = buttonData[m.sender][${index}];
-                client.sendImage(from, anime.images.jpg.image_url, \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`, mek`;
-        });
+client.sendImage(from, anime.images.jpg.image_url, \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`, mek`;
+});
 
         // Send the list of anime names with instruction to reply with a number
         m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
