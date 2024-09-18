@@ -272,7 +272,7 @@ const autoAI = async () => {
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
-                        const hasil = await axios.get(`https://nue-api.vercel.app/api/bard?text=${EncodeURIComponent(msg)}`);
+                        const hasil = await axios.get(`https://nue-api.vercel.app/api/bard?text=${encodeURIComponent(msg)}`);
                         m.reply(`> GOOGLE: ${hasil.data.google}\n${hasil.data.result}`);
                     }catch(error){
                         m.reply("terjadi kesalahan: "+error.message)
