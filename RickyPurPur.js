@@ -275,7 +275,7 @@ const autoAI = async () => {
                         const hasil = await axios.get(`https://nue-api.vercel.app/api/bard?text=${EncodeURIComponent(msg)}`);
                         m.reply(`> GOOGLE: ${hasil.data.google}\n${hasil.data.result}`);
                     }catch(error){
-                        m.reply("terjadi kesalahan: "error.message)
+                        m.reply("terjadi kesalahan: "+error.message)
                     }
                 }break;
                 case 'anidif': {
