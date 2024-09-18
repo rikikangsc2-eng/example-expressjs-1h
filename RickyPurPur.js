@@ -294,27 +294,34 @@ const autoAI = async () => {
 
         if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
 
-        // Menyiapkan string untuk satu anime secara acak
-        const randomIndex = Math.floor(Math.random() * animeList.length);
-        const randomAnime = animeList[randomIndex];
+        // Urutkan anime berdasarkan judul
+        const sortedAnimeList = animeList.sort((a, b) => a.title.localeCompare(b.title));
 
-        let animeSchedule = `*Jadwal Anime Acak Hari ${hari.charAt(0).toUpperCase() + hari.slice(1)}:*\n\n`;
-        const { title, episodes, broadcast } = randomAnime;
-        const dayUpdate = broadcast.day || hari;
+        // Menyiapkan string untuk daftar anime
+        let animeSchedule = `*Jadwal Anime Update Hari ${hari.charAt(0).toUpperCase() + hari.slice(1)}:*\n\n`;
 
-        animeSchedule += `*${title}*\n`;
-        animeSchedule += `Episode Terbaru: ${episodes || 'N/A'}\n`;
-        animeSchedule += `Update Setiap: ${dayUpdate}\n\n`;
+        sortedAnimeList.forEach((anime, index) => {
+            const { title, episodes, broadcast, genres } = anime;
+            const dayUpdate = broadcast.day || hari;
+            const genreList = genres.map(genre => genre.name).join(', ') || 'N/A';
+            
+            animeSchedule += `*${index + 1}. ${title}*\n`;
+            animeSchedule += `Episode Terbaru: ${episodes || 'N/A'}\n`;
+            animeSchedule += `Update Setiap: ${dayUpdate}\n`;
+            animeSchedule += `Genre: ${genreList}\n\n`;
+        });
 
-        // Mengirimkan jadwal anime secara acak
+        // Mengirimkan daftar anime dalam format string
         await client.sendMessage(from, { text: animeSchedule });
 
-        // Mengirimkan thumbnail anime acak
+        // Memilih satu anime secara acak untuk mengirimkan thumbnail
+        const randomIndex = Math.floor(Math.random() * sortedAnimeList.length);
+        const randomAnime = sortedAnimeList[randomIndex];
         const thumbUrl = randomAnime.images.jpg.image_url || randomAnime.images.webp.image_url;
 
         await client.sendMessage(from, {
             image: { url: thumbUrl },
-            caption: `*Judul:* ${randomAnime.title}\n*Episode Terbaru:* ${randomAnime.episodes || 'N/A'}\n*Update Setiap:* ${randomAnime.broadcast.day || hari}`
+            caption: `*Judul:* ${randomAnime.title}\n*Episode Terbaru:* ${randomAnime.episodes || 'N/A'}\n*Update Setiap:* ${randomAnime.broadcast.day || hari}\n*Genre:* ${randomAnime.genres.map(genre => genre.name).join(', ') || 'N/A'}`
         });
 
     } catch (error) {
@@ -323,8 +330,6 @@ const autoAI = async () => {
     }
 }
 break;
-
-
 
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
