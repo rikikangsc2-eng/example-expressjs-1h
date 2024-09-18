@@ -270,6 +270,7 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
                  case 'jadwal': {
+                     if (!msg) return m.reply("Contoh *.jadwal sabtu*")
     const mapDayToEnglish = (day) => {
         return day
             .replace(/minggu/i, 'sunday')
@@ -281,7 +282,7 @@ const autoAI = async () => {
             .replace(/sabtu/i, 'saturday');
     };
 
-    let day = msg || 'monday';  
+    let day = msg || 'monday';
     day = mapDayToEnglish(day);
 
     try {
@@ -297,17 +298,218 @@ const autoAI = async () => {
         buttonDate[m.sender] = waktu;
         buttonData[m.sender] = animeList;
 
-        buttonText[m.sender] = {};
-
-        for (let i = 0; i < Math.min(animeList.length, 30); i++) {
-            buttonText[m.sender][i + 1] = `async () => {
-                const anime = buttonData[m.sender][${i}];
+        buttonText[m.sender] = {
+            1: `async () => {
+                const anime = buttonData[m.sender][0];
                 await client.sendMessage(m.chat, {
                     image: { url: anime.images.jpg.image_url },
                     caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
                 }, { quoted: m });
-            }`;
-        }
+            }`,
+            2: `async () => {
+                const anime = buttonData[m.sender][1];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            3: `async () => {
+                const anime = buttonData[m.sender][2];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            4: `async () => {
+                const anime = buttonData[m.sender][3];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            5: `async () => {
+                const anime = buttonData[m.sender][4];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            6: `async () => {
+                const anime = buttonData[m.sender][5];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            7: `async () => {
+                const anime = buttonData[m.sender][6];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            8: `async () => {
+                const anime = buttonData[m.sender][7];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            9: `async () => {
+                const anime = buttonData[m.sender][8];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            10: `async () => {
+                const anime = buttonData[m.sender][9];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            11: `async () => {
+                const anime = buttonData[m.sender][10];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            12: `async () => {
+                const anime = buttonData[m.sender][11];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            13: `async () => {
+                const anime = buttonData[m.sender][12];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            14: `async () => {
+                const anime = buttonData[m.sender][13];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            15: `async () => {
+                const anime = buttonData[m.sender][14];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            16: `async () => {
+                const anime = buttonData[m.sender][15];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            17: `async () => {
+                const anime = buttonData[m.sender][16];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            18: `async () => {
+                const anime = buttonData[m.sender][17];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            19: `async () => {
+                const anime = buttonData[m.sender][18];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            20: `async () => {
+                const anime = buttonData[m.sender][19];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            21: `async () => {
+                const anime = buttonData[m.sender][20];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            22: `async () => {
+                const anime = buttonData[m.sender][21];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            23: `async () => {
+                const anime = buttonData[m.sender][22];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            24: `async () => {
+                const anime = buttonData[m.sender][23];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            25: `async () => {
+                const anime = buttonData[m.sender][24];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            26: `async () => {
+                const anime = buttonData[m.sender][25];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            27: `async () => {
+                const anime = buttonData[m.sender][26];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            28: `async () => {
+                const anime = buttonData[m.sender][27];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            29: `async () => {
+                const anime = buttonData[m.sender][28];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+            30: `async () => {
+                const anime = buttonData[m.sender][29];
+                await client.sendMessage(m.chat, {
+                    image: { url: anime.images.jpg.image_url },
+                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
+                }, { quoted: m });
+            }`,
+        };
 
         m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
 
@@ -316,8 +518,8 @@ const autoAI = async () => {
         m.reply('Terjadi kesalahan saat mengambil data dari API Jikan.');
     }
     break;
-                 }
-                    
+}
+
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
