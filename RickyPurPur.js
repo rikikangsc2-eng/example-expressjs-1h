@@ -21,7 +21,7 @@ const noBot = '6283873321433'
 const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
 const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
-const arrMenuAI = ['ai - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
+const arrMenuAI = ['.ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
 const arrMenuAnime = ['ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
 const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
 const arrMenuFun = ['top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
@@ -269,6 +269,15 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
+                case 'gemini':{
+                    if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
+                    try {
+                        const hasil = await axios.get(`https://nue-api.vercel.app/api/bard?text=${EncodeURIComponent(msg)}`);
+                        m.reply(`> GOOGLE: ${hasil.data.google}\n${hasil.data.result}`);
+                    }catch(error){
+                        m.reply("terjadi kesalahan: "error.message)
+                    }
+                }break;
                 case 'anidif': {
                     if (!msg) return m.reply('.anidif 17 year old girl standing on the street\n> lakukan seperti contoh');
                     try {
