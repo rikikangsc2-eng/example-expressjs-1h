@@ -269,6 +269,54 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
+                    case 'jadwal': {
+    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
+
+    const hari = msg.toLowerCase();
+    const daysMap = {
+        'senin': 'monday',
+        'selasa': 'tuesday',
+        'rabu': 'wednesday',
+        'kamis': 'thursday',
+        'jumat': 'friday',
+        'sabtu': 'saturday',
+        'minggu': 'sunday'
+    };
+
+    if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
+
+    const dayInEnglish = daysMap[hari];
+    
+    try {
+        // Mengambil data dari Jikan Moe
+        const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
+        const animeList = response.data.data;
+
+        if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
+
+        // Menyusun string berisi daftar nama anime
+        let daftarAnime = `Anime yang tayang hari ${hari}:\n\n`;
+        const buttons = [];
+
+        animeList.forEach((anime, index) => {
+            const { title, mal_id } = anime;
+            daftarAnime += `${index + 1}. ${title}\n`;
+            buttons.push({ buttonId: `anime_${mal_id}`, buttonText: { displayText: `${index + 1}. ${title}` }, type: 1 });
+        });
+
+        // Menampilkan daftar anime dan membuat button
+        await client.sendMessage(from, {
+            text: daftarAnime,
+            buttons: buttons,
+            headerType: 1
+        });
+    } catch (error) {
+        console.error(error);
+        client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
+    }
+}
+break;
+
                 case 'jadwal': {
     if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
 
