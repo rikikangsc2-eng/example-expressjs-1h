@@ -270,109 +270,60 @@ const autoAI = async () => {
         if (cekCmd(m.body)) {
             switch (command) {
                     case 'jadwal': {
-    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
-
-    const hari = msg.toLowerCase();
-    const daysMap = {
-        'senin': 'monday',
-        'selasa': 'tuesday',
-        'rabu': 'wednesday',
-        'kamis': 'thursday',
-        'jumat': 'friday',
-        'sabtu': 'saturday',
-        'minggu': 'sunday'
+    // Function to map Indonesian day names to English
+    const mapDayToEnglish = (day) => {
+        return day
+            .replace(/minggu/i, 'sunday')
+            .replace(/senin/i, 'monday')
+            .replace(/selasa/i, 'tuesday')
+            .replace(/rabu/i, 'wednesday')
+            .replace(/kamis/i, 'thursday')
+            .replace(/jumat/i, 'friday')
+            .replace(/sabtu/i, 'saturday');
     };
 
-    if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
-
-    const dayInEnglish = daysMap[hari];
+    // Check if the user provided a day (optional)
+    let day = msg || 'monday';  // Default to Monday if no day is provided
     
+    // Convert Indonesian day to English if necessary
+    day = mapDayToEnglish(day);
+
+    // Show loading reaction to the user
+    loading();
+
     try {
-        // Mengambil data dari Jikan Moe
-        const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
+        // Fetch the anime schedule from the Jikan API
+        const response = await axios.get(`https://api.jikan.moe/v4/schedules?filter=${day}`);
         const animeList = response.data.data;
 
-        if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
+        if (!animeList.length) {
+            return m.reply(`Tidak ada anime yang tayang pada hari ${day}.`);
+        }
 
-        // Menyusun string berisi daftar nama anime
-        let daftarAnime = `Anime yang tayang hari ${hari}:\n\n`;
-        const buttons = [];
+        // Create a list of anime names
+        let listAnime = animeList.map((anime, index) => `${index + 1}. ${anime.title}`).join('\n');
 
-        animeList.forEach((anime, index) => {
-            const { title, mal_id } = anime;
-            daftarAnime += `${index + 1}. ${title}\n`;
-            buttons.push({ buttonId: `anime_${mal_id}`, buttonText: { displayText: `${index + 1}. ${title}` }, type: 1 });
-        });
+        // Store the data for button interaction
+        buttonText[m.sender] = animeList.reduce((acc, anime, index) => {
+            acc[(index + 1).toString()] = `client.sendMessage(m.chat, {
+                image: { url: '${anime.images.jpg.image_url}' },
+                caption: '*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.'
+            }, { quoted: m });`;
+            return acc;
+        }, {});
 
-        // Menampilkan daftar anime dan membuat button
-        await client.sendMessage(from, {
-            text: daftarAnime,
-            buttons: buttons,
-            headerType: 1
-        });
-    } catch (error) {
-        console.error(error);
-        client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
-    }
-}
-break;
+        // Create button text for selection
+        const waktu = Date.now() + m.sender.split('@')[0];
+        buttonDate[m.sender] = waktu;
 
-                case 'jadwal': {
-    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
-
-    const hari = msg.toLowerCase();
-    const daysMap = {
-        'senin': 'monday',
-        'selasa': 'tuesday',
-        'rabu': 'wednesday',
-        'kamis': 'thursday',
-        'jumat': 'friday',
-        'sabtu': 'saturday',
-        'minggu': 'sunday'
-    };
-
-    if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
-
-    const dayInEnglish = daysMap[hari];
-    
-    try {
-        // Menggunakan API Jikan Moe untuk mengambil jadwal anime berdasarkan hari
-        const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
-        const animeList = response.data.data;
-
-        if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
-
-        // Menyiapkan string untuk daftar anime
-        let animeSchedule = `*Jadwal Anime Update Hari ${hari.charAt(0).toUpperCase() + hari.slice(1)}:*\n\n`;
-
-        animeList.forEach((anime, index) => {
-            const { title, episodes, broadcast } = anime;
-            const dayUpdate = broadcast.day || hari;
-            
-            animeSchedule += `*${index + 1}. ${title}*\n`;
-            animeSchedule += `Episode Terbaru: ${episodes || 'N/A'}\n`;
-            animeSchedule += `Update Setiap: ${dayUpdate}\n\n`;
-        });
-
-        // Mengirimkan daftar anime dalam format string
-        await client.sendMessage(from, { text: animeSchedule });
-
-        // Mengirimkan satu thumbnail anime (anime pertama)
-        const firstAnime = animeList[0];
-        const thumbUrl = firstAnime.images.jpg.image_url || firstAnime.images.webp.image_url;
-        
-        await client.sendMessage(from, {
-            image: { url: thumbUrl },
-            caption: `*Judul:* ${firstAnime.title}\n*Episode Terbaru:* ${firstAnime.episodes || 'N/A'}\n*Update Setiap:* ${firstAnime.broadcast.day || hari}`
-        });
+        m.reply(`Daftar anime yang tayang pada hari *${day}*:\n\n${listAnime}\n\nBalas dengan angka pilihanmu!\nalicia-metadata: ${waktu}`);
 
     } catch (error) {
         console.error(error);
-        client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
+        m.reply('Terjadi kesalahan saat mengambil data dari API Jikan.');
     }
-}
-break;
-
+                    }
+                    
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
