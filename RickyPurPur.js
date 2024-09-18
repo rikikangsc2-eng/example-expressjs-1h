@@ -288,9 +288,6 @@ const autoAI = async () => {
     // Convert Indonesian day to English if necessary
     day = mapDayToEnglish(day);
 
-    // Show loading reaction to the user
-    loading();
-
     try {
         // Fetch the anime schedule from the Jikan API
         const response = await axios.get(`https://api.jikan.moe/v4/schedules?filter=${day}`);
@@ -311,13 +308,8 @@ const autoAI = async () => {
         // Dynamically generate buttonText for interaction
         buttonText[m.sender] = {};
         animeList.forEach((anime, index) => {
-            buttonText[m.sender][index + 1] = `async () => {
-                const anime = buttonData[m.sender][${index}];
-                await client.sendMessage(m.chat, {
-                    image: { url: anime.images.jpg.image_url },
-                    caption: \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`
-                }, { quoted: m });
-            }`;
+            buttonText[m.sender][index + 1] = `const anime = buttonData[m.sender][${index}];
+                await client.sendImage(from, anime.images.jpg.image_url, \`*${anime.title}*\n\n*Genre:* ${anime.genres.map(g => g.name).join(', ')}\n*Sinopsis:* ${anime.synopsis}\n*Status:* ${anime.status}\n*Episode terakhir:* ${anime.episodes_aired}\n*Total episode:* ${anime.episodes || 'N/A'}\n\nUpdate setiap hari ${day}.\`, mek`;
         });
 
         // Send the list of anime names with instruction to reply with a number
