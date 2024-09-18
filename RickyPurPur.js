@@ -269,6 +269,89 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
+                case 'jadwal': {
+    if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal sabtu` });
+
+    const hari = msg.toLowerCase();
+    const daysMap = {
+        'senin': 'monday',
+        'selasa': 'tuesday',
+        'rabu': 'wednesday',
+        'kamis': 'thursday',
+        'jumat': 'friday',
+        'sabtu': 'saturday',
+        'minggu': 'sunday'
+    };
+
+    if (!daysMap[hari]) return client.sendMessage(from, { text: `Hari tidak valid! Gunakan: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, atau Minggu.` });
+
+    const dayInEnglish = daysMap[hari];
+
+    try {
+        // Mengambil jadwal anime dari API Jikan berdasarkan hari
+        const response = await axios.get(`https://api.jikan.moe/v4/schedules/${dayInEnglish}`);
+        const animeList = response.data.data;
+
+        if (animeList.length === 0) return client.sendMessage(from, { text: `Tidak ada anime yang ditemukan untuk hari ${hari}.` });
+
+        // Fungsi untuk memuat gambar
+        async function image(url) {
+            const { imageMessage } = await generateWAMessageContent({
+                image: { url }
+            }, {
+                upload: client.waUploadToServer
+            });
+            return imageMessage;
+        }
+
+        // Menyiapkan carousel cards untuk setiap anime
+        let cards = [];
+        for (const anime of animeList) {
+            const { title, images, episodes, airing, broadcast } = anime;
+            const thumbUrl = images.jpg.image_url || images.webp.image_url;
+            const dayUpdate = broadcast.day || hari;
+
+            // Membuat setiap card untuk anime
+            cards.push({
+                header: {
+                    imageMessage: await image(thumbUrl),
+                    hasMediaAttachment: true,
+                },
+                body: {
+                    text: `*Judul:* ${title}\n*Episode Terbaru:* ${episodes || 'N/A'}\n*Update Setiap:* ${dayUpdate}\n*Sedang Tayang:* ${airing ? 'Ya' : 'Tidak'}`
+                },
+            });
+        }
+
+        // Membuat pesan carousel
+        let msg = generateWAMessageFromContent(
+            m.chat,
+            {
+                viewOnceMessage: {
+                    message: {
+                        interactiveMessage: {
+                            carouselMessage: {
+                                cards: cards, // Menggunakan cards yang sudah di-generate
+                                messageVersion: 1,
+                            }
+                        }
+                    }
+                }
+            },
+            {}
+        );
+
+        // Mengirimkan pesan carousel
+        await client.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+        });
+
+    } catch (error) {
+        console.error(error);
+        client.sendMessage(from, { text: 'Maaf, terjadi kesalahan saat mengambil data jadwal anime.' });
+    }
+}
+
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
@@ -474,19 +557,7 @@ const autoAI = async () => {
                                                 break;
                                             }
 
-                                                case 'jadwal': {
-                                                    if (!msg) return m.reply(`.${command} sabtu\n> Lakukan seperti contoh`)
-                                                    try {
-                                                        const response = await axios.get('https://nue-api.vercel.app/api/anime-jadwal?hari='+msg);
-                                                        const data = response.data;
-                                                        const animeMinggu = data.template_text;
-
-                                                        m.reply(animeMinggu);
-                                                    } catch (error) {
-                                                        m.reply(error.message)
-                                                        console.error(error);
-                                                    }
-                                                }break;
+                                                
                                                 case 'nyerah': {
                                                     client.sendMessage(m.chat, {
                                                         text: await gameku.nyerah(nomorUser),
