@@ -143,7 +143,7 @@ const jackpot = async (username, taruhan) => {
 
   let emoji = ['7️⃣','🥭','🍎'];
   let papan = Array(3).fill();
-  let comboMenang = Math.random() < 0.1;
+  let comboMenang = Math.random() < 0.3;
 
   for (let i = 0; i < 3; i++) {
     if (comboMenang) {
