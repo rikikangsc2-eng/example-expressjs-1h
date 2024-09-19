@@ -22,7 +22,7 @@ const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
 const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
 const arrMenuAI = ['.ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
-const arrMenuAnime = ['ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
+const arrMenuAnime = ['.char cmd singkat character','.character Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
 const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
 const arrMenuFun = ['top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
 const arrMenuMaker = [];
@@ -269,6 +269,28 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
+                    case "char":
+case "character": {
+    if (!msg) return m.reply("Masukkan nama karakter!");
+
+    try {
+        const response = await axios.get(`https://api.jikan.moe/v4/characters?q=${encodeURIComponent(msg)}&limit=1`);
+        const character = response.data.data[0];
+
+        if (!character) return m.reply("Karakter tidak ditemukan.");
+
+        const imageUrl = character.images.jpg.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiwQcjr_19gJsFnfNTlKqSagf6JUI-C_TipdiKerczTI6J1NPsF3fwICU&s=10';
+
+        await client.sendMessage(m.chat, {
+            image: { url: imageUrl },
+            caption: `*Nama:* ${character.name}\n*Nama Jepang:* ${character.name_kanji}\n*Deskripsi:* ${character.about}`
+        }, { quoted: m });
+
+    } catch (error) {
+        m.reply("Terjadi kesalahan saat mengambil data dari API Jikan.");
+    }
+} break;
+            
               case 'jadwal': {
     if (!msg) return client.sendMessage(from, { text: `Format salah! Contoh: .jadwal senin` });
 
@@ -334,6 +356,7 @@ break;
                 case 'gemini':{
                     if (!msg) return m.reply(".gemini apa kabar\n> Lakukan seperti contoh");
                     try {
+                        loading()
                         const hasil = await axios.get(`https://nue-api.vercel.app/api/bard?text=${encodeURIComponent(msg)}`);
                         m.reply(`> GOOGLE: ${hasil.data.google}\n${hasil.data.result}`);
                     }catch(error){
