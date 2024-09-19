@@ -22,7 +22,7 @@ const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
 const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
 const arrMenuAI = ['.ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
-const arrMenuAnime = ['.char cmd singkat character','.character Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
+const arrMenuAnime = ['.search - Cari dan tampilkan status anime','.char - cmd singkat character','.character - Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
 const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
 const arrMenuFun = ['top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
 const arrMenuMaker = [];
@@ -269,6 +269,47 @@ const autoAI = async () => {
 
         if (cekCmd(m.body)) {
             switch (command) {
+                    case "search": {
+    if (!msg) return m.reply("Masukkan nama anime!");
+
+    loading();
+
+    try {
+        const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(msg)}&limit=1`);
+        const anime = response.data.data[0];
+
+        if (!anime) return m.reply("Anime tidak ditemukan.");
+
+        const imageUrl = anime.images.jpg.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiwQcjr_19gJsFnfNTlKqSagf6JUI-C_TipdiKerczTI6J1NPsF3fwICU&s=10';
+        const genres = anime.genres.map((genre) => genre.name).join(', ') || 'Tidak ada';
+        const studios = anime.studios.map((studio) => studio.name).join(', ') || 'Tidak ada';
+        const producers = anime.producers.map((producer) => producer.name).join(', ') || 'Tidak ada';
+        const licensors = anime.licensors.map((licensor) => licensor.name).join(', ') || 'Tidak ada';
+        const airingStatus = anime.airing ? "Sedang tayang" : "Selesai";
+
+        await client.sendMessage(m.chat, {
+            image: { url: imageUrl },
+            caption: `*Judul:* ${anime.title}\n` +
+                     `*Judul Jepang:* ${anime.title_japanese}\n` +
+                     `*Tipe:* ${anime.type}\n` +
+                     `*Jumlah Episode:* ${anime.episodes || 'Belum diketahui'}\n` +
+                     `*Status:* ${airingStatus}\n` +
+                     `*Tanggal Tayang:* ${anime.aired.string}\n` +
+                     `*Durasi per Episode:* ${anime.duration}\n` +
+                     `*Rating:* ${anime.rating}\n` +
+                     `*Skor:* ${anime.score || 'Belum diberi skor'}\n` +
+                     `*Genre:* ${genres}\n` +
+                     `*Studio:* ${studios}\n` +
+                     `*Produser:* ${producers}\n` +
+                     `*Lisensor:* ${licensors}\n` +
+                     `*Sinopsis:* ${anime.synopsis || 'Tidak ada sinopsis'}\n`
+        }, { quoted: m });
+
+    } catch (error) {
+        m.reply("Terjadi kesalahan saat mengambil data dari API Jikan.");
+    }
+} break;
+
                     case "char":
 case "character": {
     if (!msg) return m.reply("Masukkan nama karakter!");
