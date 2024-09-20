@@ -268,7 +268,7 @@ const autoAI = async () => {
       const akiInstance = akiSessions[sender];
       await akiInstance.step(userAnswer - 1);
       if (akiInstance.progress >= 90 || akiInstance.currentStep >= 80) {
-        await akiInstance.win();
+        await akiInstance.answer();
       return client.sendMessage(from, { text: `Aku menebak: ${akiInstance.answers[0].name}\n${akiInstance.answers[0].description}\n\nKetik ".start" untuk bermain lagi atau ".stop" untuk keluar.` });
         delete akiSessions[sender];
       } else {
