@@ -24,7 +24,7 @@ const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
 const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
 const arrMenuAI = ['ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
-const arrMenuAnime = ['search - Cari dan tampilkan status anime','char - cmd singkat character','.character - Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
+const arrMenuAnime = ['search - Cari dan tampilkan status anime','char - cmd singkat character','character - Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
 const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
 const arrMenuFun = ['akinator - game jin serba tw','top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
 const arrMenuMaker = [];
@@ -256,18 +256,6 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-        if (!m.isGroup && !cekCmd(m.body) && m.body) {
-            if (m.quoted) {
-                if (!m.quoted.text.includes('alicia-metadata:')) {
-                    return autoAI();
-                }
-            } else {
-                return autoAI();
-            }
-        }
-        if (m.quoted && m.quoted.sender.includes(noBot) && !cekCmd(m.body)) {
-            return autoAI();
-        }
         if (m.quoted && m.quoted.text.includes("ketik nomor jawaban")) {
             if (!akiSessions[sender]) {
         return client.sendMessage(from, { text: 'Ketik "start" untuk memulai game.' });
@@ -280,12 +268,25 @@ const autoAI = async () => {
       await akiInstance.step(userAnswer - 1);
       if (akiInstance.progress >= 90 || akiInstance.currentStep >= 80) {
         await akiInstance.win();
-        client.sendMessage(from, { text: `Aku menebak: ${akiInstance.answers[0].name}\n${akiInstance.answers[0].description}\n\nKetik "start" untuk bermain lagi atau "nyerah" untuk keluar.` });
+      return client.sendMessage(from, { text: `Aku menebak: ${akiInstance.answers[0].name}\n${akiInstance.answers[0].description}\n\nKetik ".start" untuk bermain lagi atau ".stop" untuk keluar.` });
         delete akiSessions[sender];
       } else {
-        client.sendMessage(from, { text: `${akiInstance.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
+        return client.sendMessage(from, { text: `${akiInstance.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
       }
         };
+        if (!m.isGroup && !cekCmd(m.body) && m.body) {
+            if (m.quoted) {
+                if (!m.quoted.text.includes('alicia-metadata:')) {
+                    return autoAI();
+                }
+            } else {
+                return autoAI();
+            }
+        }
+        if (m.quoted && m.quoted.sender.includes(noBot) && !cekCmd(m.body)) {
+            return autoAI();
+        }
+        
         if (cekCmd(m.body)) {
             switch (command) {
                 case 'akinator':{
