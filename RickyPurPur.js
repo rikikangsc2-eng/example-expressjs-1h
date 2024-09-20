@@ -256,10 +256,11 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-        if (m.quoted && m.quoted.text.includes("ketik nomor jawaban")) {
+        if (m.quoted && m.quoted.text.includes("Ketik nomor jawaban.")) {
             if (!akiSessions[sender]) {
         return client.sendMessage(from, { text: 'Ketik "start" untuk memulai game.' });
       }
+            loading()
       const userAnswer = m.body
       if (!userAnswer || userAnswer < 1 || userAnswer > 5) {
         return client.sendMessage(from, { text: 'Jawaban tidak valid. Ketik nomor antara 1-5.' });
@@ -296,6 +297,7 @@ const autoAI = async () => {
       if (akiSessions[sender]) {
         return client.sendMessage(from, { text: 'Game sudah dimulai, ketik ".stop" untuk berhenti.' });
       }
+                        loading()
       const aki = new Aki({ region: 'id' }); // Use correct region for Indonesia // Akinator bahasa Indonesia
       await aki.start();
       akiSessions[sender] = aki;
