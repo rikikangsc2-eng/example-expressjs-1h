@@ -15,7 +15,9 @@ const chalk = require("chalk");
 const axios = require("axios");
 const toUrl = require("./func/tools-toUrl.js");
 const gameku = require('./func/fun-game.js');
+const { Aki } = require('aki-api');
 //---
+const akiSessions = {};
 const botOwner = '6283894391287';
 const noBot = '6283873321433'
 const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
@@ -266,9 +268,55 @@ const autoAI = async () => {
         if (m.quoted && m.quoted.sender.includes(noBot) && !cekCmd(m.body)) {
             return autoAI();
         }
-
+        if (m.quoted && m.quoted.text.includes("ketik nomor jawaban")) {
+            if (!akiSessions[sender]) {
+        return client.sendMessage(from, { text: 'Ketik "start" untuk memulai game.' });
+      }
+      const userAnswer = m.body
+      if (!userAnswer || userAnswer < 1 || userAnswer > 5) {
+        return client.sendMessage(from, { text: 'Jawaban tidak valid. Ketik nomor antara 1-5.' });
+      }
+      const akiInstance = akiSessions[sender];
+      await akiInstance.step(userAnswer - 1);
+      if (akiInstance.progress >= 90 || akiInstance.currentStep >= 80) {
+        await akiInstance.win();
+        client.sendMessage(from, { text: `Aku menebak: ${akiInstance.answers[0].name}\n${akiInstance.answers[0].description}\n\nKetik "start" untuk bermain lagi atau "nyerah" untuk keluar.` });
+        delete akiSessions[sender];
+      } else {
+        client.sendMessage(from, { text: `${akiInstance.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
+      }
+        };
         if (cekCmd(m.body)) {
             switch (command) {
+                case 'akinator':{
+                    m.reply(".start\n.stop")
+                }break;
+                    case 'start':{
+      if (akiSessions[sender]) {
+        return client.sendMessage(from, { text: 'Game sudah dimulai, ketik ".stop" untuk berhenti.' });
+      }
+      const aki = new Aki('id'); // Akinator bahasa Indonesia
+      await aki.start();
+      akiSessions[sender] = aki;
+      client.sendMessage(from, { text: `${aki.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
+                    }break;
+
+    case 'back':{
+      if (!akiSessions[sender]) {
+        return client.sendMessage(from, { text: 'Ketik ".start" untuk memulai game.' });
+      }
+      akiSessions[sender].back();
+      client.sendMessage(from, { text: `${akiSessions[sender].question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
+    } break;
+
+    case 'stop':{
+      if (akiSessions[sender]) {
+        delete akiSessions[sender];
+        client.sendMessage(from, { text: 'Anda telah berhenti bermain. Ketik ".start" untuk bermain lagi.' });
+      } else {
+        client.sendMessage(from, { text: 'Tidak ada game yang berjalan. Ketik ".start" untuk memulai.' });
+      }
+        }break;
                     case "search": {
     if (!msg) return m.reply("Masukkan nama anime!");
 
