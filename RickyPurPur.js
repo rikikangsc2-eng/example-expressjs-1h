@@ -273,7 +273,7 @@ const autoAI = async () => {
     // Check if Akinator is ready to guess
     if (akiInstance.progress >= 90 || akiInstance.currentStep >= 80) {
         const guess = akiInstance.answers; // Answers from the current step
-
+        return m.reply(JSON.stringiyf(guess, null, 2))
         return client.sendMessage(from, { text: `Aku menebak: ${guess[0].name}\n${guess[0].description}\n\nKetik ".start" untuk bermain lagi atau ".stop" untuk keluar.` });
         delete akiSessions[sender];
     } else {
