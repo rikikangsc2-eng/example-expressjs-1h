@@ -15,7 +15,6 @@ const chalk = require("chalk");
 const axios = require("axios");
 const toUrl = require("./func/tools-toUrl.js");
 const gameku = require('./func/fun-game.js');
-const { Aki } = require('aki-api');
 //---
 const akiSessions = {};
 const botOwner = '6283894391287';
@@ -271,15 +270,6 @@ const autoAI = async () => {
     await akiInstance.step(userAnswer - 1);  // Subtract 1 because Akinator uses zero-based indexing
     
     // Check if Akinator is ready to guess
-    if (akiInstance.progress >= 90 || akiInstance.currentStep >= 80) {
-        const guess = akiInstance.answers; // Answers from the current step
-        return m.reply(JSON.stringify(guess, null, 2))
-        return client.sendMessage(from, { text: `Aku menebak: ${guess[0].name}\n${guess[0].description}\n\nKetik ".start" untuk bermain lagi atau ".stop" untuk keluar.` });
-        delete akiSessions[sender];
-    } else {
-        return client.sendMessage(from, { text: `${akiInstance.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
-    }
-};
         if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
@@ -298,36 +288,6 @@ const autoAI = async () => {
                 case 'akinator':{
                     m.reply(".start\n.stop\n.back")
                 }break;
-                    
-case 'start': {
-    if (akiSessions[sender]) {
-        return client.sendMessage(from, { text: 'Game sudah dimulai, ketik ".stop" untuk berhenti.' });
-    }
-    loading();
-    const aki = new Aki({ region: 'id' }); // Akinator in Indonesian
-    await aki.start();
-    akiSessions[sender] = aki;
-    
-    return client.sendMessage(from, { text: `${aki.question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
-} break;
-
-case 'back': {
-    if (!akiSessions[sender]) {
-        return client.sendMessage(from, { text: 'Ketik ".start" untuk memulai game.' });
-    }
-    await akiSessions[sender].back();  // Ensure back is awaited
-    return client.sendMessage(from, { text: `${akiSessions[sender].question}\n1. Ya\n2. Tidak\n3. Saya tidak tahu\n4. Mungkin\n5. Mungkin tidak\n\nKetik nomor jawaban.` });
-} break;
-
-case 'stop': {
-    if (akiSessions[sender]) {
-        delete akiSessions[sender];
-        return client.sendMessage(from, { text: 'Anda telah berhenti bermain. Ketik ".start" untuk bermain lagi.' });
-    } else {
-        return client.sendMessage(from, { text: 'Tidak ada game yang berjalan. Ketik ".start" untuk memulai.' });
-    }
-} break;
-
                     case "search": {
     if (!msg) return m.reply("Masukkan nama anime!");
 
