@@ -255,21 +255,7 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-        if (m.quoted && m.quoted.text.includes("Ketik nomor jawaban.")) {
-    if (!akiSessions[sender]) {
-        return client.sendMessage(from, { text: 'Ketik ".start" untuk memulai game.' });
-    }
-    loading();
-    
-    const userAnswer = parseInt(m.body); // Ensure userAnswer is an integer
-    if (isNaN(userAnswer) || userAnswer < 1 || userAnswer > 5) {
-        return client.sendMessage(from, { text: 'Jawaban tidak valid. Ketik nomor antara 1-5.' });
-    }
-
-    const akiInstance = akiSessions[sender];
-    await akiInstance.step(userAnswer - 1);  // Subtract 1 because Akinator uses zero-based indexing
-    
-    // Check if Akinator is ready to guess
+       
         if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
