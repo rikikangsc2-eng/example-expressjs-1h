@@ -255,7 +255,20 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-       
+        if (m.quoted && m.quoted.text.includes('Progress') && /^\d+$/.test(m.body)) {
+    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/answer/${m.body - 1}`)
+        .then(({ question, progress, win, suggestion_name, suggestion_desc, suggestion_photo }) => {
+            if (win) {
+                client.sendMessage(m.chat, { image: { url: suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${suggestion_name}` });
+            } else {
+                m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
+            }
+        })
+        .catch(() => m.reply("Gagal mengirim jawaban. Silakan coba lagi."));
+} else if (m.quoted && m.quoted.text.includes('Progress')) {
+    m.reply('Reply dan berikan nomor pilihanmu saja tanpa tambahan apapun, dan pastikan pilihanmu ada dalam menu');
+}
+
         if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
@@ -271,8 +284,25 @@ const autoAI = async () => {
         
         if (cekCmd(m.body)) {
             switch (command) {
+                case "start":{
+    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/start`)
+        .then(response => {
+            const { question, progress } = response.data;
+            m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
+        })
+        .catch(() => m.reply("Gagal memulai game. Silakan coba lagi."));
+        } break;
+case "back":{
+    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/cancel`)
+        .then(response => {
+            const { question, progress } = response.data;
+            m.reply(`Jawaban terakhir dibatalkan.\nPertanyaan saat ini: ${question}\nProgress: ${progress}%`);
+        })
+        .catch(() => m.reply("Gagal membatalkan jawaban. Silakan coba lagi."));
+            } break;
+
                 case 'akinator':{
-                    m.reply(".start\n.stop\n.back")
+                    m.reply(".start\n.back")
                 }break;
                     case "search": {
     if (!msg) return m.reply("Masukkan nama anime!");
