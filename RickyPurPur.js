@@ -259,9 +259,9 @@ const autoAI = async () => {
     axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/answer/${m.body - 1}`)
         .then(({ question, progress, win, suggestion_name, suggestion_desc, suggestion_photo }) => {
             if (win) {
-                client.sendMessage(m.chat, { image: { url: suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${suggestion_name}` });
+                return client.sendMessage(m.chat, { image: { url: suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${suggestion_name}` });
             } else {
-                m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
+                return m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
             }
         })
         .catch(() => m.reply("Gagal mengirim jawaban. Silakan coba lagi."));
