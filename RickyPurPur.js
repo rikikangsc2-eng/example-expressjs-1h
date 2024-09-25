@@ -15,6 +15,7 @@ const chalk = require("chalk");
 const axios = require("axios");
 const toUrl = require("./func/tools-toUrl.js");
 const gameku = require('./func/fun-game.js');
+const { Akinator, AkinatorAnswer } = require("@aqul/akinator-api");
 //---
 const akiSessions = {};
 const botOwner = '6283894391287';
@@ -86,6 +87,7 @@ console.log(menu);
 //---
 //Database local
 //---
+let akiSesi = {}; 
 let buttonData = {};
 let buttonDate = {};
 let buttonText = {};
@@ -255,13 +257,22 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-        if (m.quoted && m.quoted.text.includes('Progress') && /^\d+$/.test(m.body)) {
-    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/answer/${m.body - 1}`)
-        .then(({ question, progress, win, suggestion_name, suggestion_desc, suggestion_photo }) => {
-            if (win) {
-                return client.sendMessage(m.chat, { image: { url: suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${suggestion_name}` });
+const getSession = (sender) => {
+    const userId = sender.split('@')[0];
+    if (!akiSesi[userId]) {
+        akiSesi[userId] = new Akinator({ region: "id", childMode: false });
+    }
+    return akiSesi[userId];
+};
+
+if (m.quoted && m.quoted.text.includes('Progress') && /^\d+$/.test(m.body)) {
+    const aki = getSession(m.sender); // Dapatkan sesi pengguna
+    aki.answer(parseInt(m.body) - 1)
+        .then(() => {
+            if (aki.isWin) {
+                return client.sendMessage(m.chat, { image: { url: aki.suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${aki.suggestion_name}` });
             } else {
-                return m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
+                return m.reply(`${aki.question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${aki.progress}%`);
             }
         })
         .catch(() => m.reply("Gagal mengirim jawaban. Silakan coba lagi."));
@@ -269,7 +280,7 @@ const autoAI = async () => {
     m.reply('Reply dan berikan nomor pilihanmu saja tanpa tambahan apapun, dan pastikan pilihanmu ada dalam menu');
 }
 
-        if (!m.isGroup && !cekCmd(m.body) && m.body) {
+if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
                     return autoAI();
@@ -284,23 +295,26 @@ const autoAI = async () => {
         
         if (cekCmd(m.body)) {
             switch (command) {
-                case "start":{
-    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/start`)
-        .then(response => {
-            const { question, progress } = response.data;
-            m.reply(`${question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${progress}%`);
+                case "start": {
+    const aki = getSession(m.sender); // Dapatkan sesi pengguna
+    aki.start()
+        .then(() => {
+            m.reply(`${aki.question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${aki.progress}%`);
         })
         .catch(() => m.reply("Gagal memulai game. Silakan coba lagi."));
-        } break;
-case "back":{
-    axios.get(`https://express-vercel-gilt.vercel.app/${m.sender.split('@')[0]}/cancel`)
-        .then(response => {
-            const { question, progress } = response.data;
-            m.reply(`Jawaban terakhir dibatalkan.\nPertanyaan saat ini: ${question}\nProgress: ${progress}%`);
+    } 
+    break;
+
+// Case untuk kembali ke pertanyaan sebelumnya
+case "back": {
+    const aki = getSession(m.sender); // Dapatkan sesi pengguna
+    aki.cancelAnswer()
+        .then(() => {
+            m.reply(`Jawaban terakhir dibatalkan.\nPertanyaan saat ini: ${aki.question}\nProgress: ${aki.progress}%`);
         })
         .catch(() => m.reply("Gagal membatalkan jawaban. Silakan coba lagi."));
-            } break;
-
+    } 
+    break;
                 case 'akinator':{
                     m.reply(".start\n.back")
                 }break;
