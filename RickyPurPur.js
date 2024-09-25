@@ -15,9 +15,7 @@ const chalk = require("chalk");
 const axios = require("axios");
 const toUrl = require("./func/tools-toUrl.js");
 const gameku = require('./func/fun-game.js');
-const { Akinator, AkinatorAnswer } = require("@aqul/akinator-api");
 //---
-const akiSessions = {};
 const botOwner = '6283894391287';
 const noBot = '6283873321433'
 const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
@@ -26,7 +24,7 @@ const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd sing
 const arrMenuAI = ['ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
 const arrMenuAnime = ['search - Cari dan tampilkan status anime','char - cmd singkat character','character - Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
 const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
-const arrMenuFun = ['akinator - game jin serba tw','top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
+const arrMenuFun = ['top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
 const arrMenuMaker = [];
 const arrMenuOther = ['owner - informasi pembuat bot', 'gcbot - group komunitas bot'];
 
@@ -87,7 +85,6 @@ console.log(menu);
 //---
 //Database local
 //---
-let akiSesi = {}; 
 let buttonData = {};
 let buttonDate = {};
 let buttonText = {};
@@ -257,29 +254,6 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
-const getSession = (sender) => {
-    const userId = sender.split('@')[0];
-    if (!akiSesi[userId]) {
-        akiSesi[userId] = new Akinator({ region: "id", childMode: false });
-    }
-    return akiSesi[userId];
-};
-
-if (m.quoted && m.quoted.text.includes('Progress') && /^\d+$/.test(m.body)) {
-    const aki = getSession(m.sender); // Dapatkan sesi pengguna
-    aki.answer(parseInt(m.body) - 1)
-        .then(() => {
-            if (aki.isWin) {
-                return client.sendMessage(m.chat, { image: { url: aki.suggestion_photo }, caption: `Ini adalah karakter yang kamu pikirkan: ${aki.suggestion_name}` });
-            } else {
-                return m.reply(`${aki.question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${aki.progress}%`);
-            }
-        })
-        .catch(() => m.reply("Gagal mengirim jawaban. Silakan coba lagi."));
-} else if (m.quoted && m.quoted.text.includes('Progress')) {
-    m.reply('Reply dan berikan nomor pilihanmu saja tanpa tambahan apapun, dan pastikan pilihanmu ada dalam menu');
-}
-
 if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
@@ -294,30 +268,7 @@ if (!m.isGroup && !cekCmd(m.body) && m.body) {
         }
         
         if (cekCmd(m.body)) {
-            switch (command) {
-                case "start": {
-    const aki = getSession(m.sender); // Dapatkan sesi pengguna
-    aki.start()
-        .then(() => {
-            m.reply(`${aki.question}\n1. Iya\n2. Tidak\n3. Tidak Tahu\n4. Mungkin\n5. Mungkin Tidak\nProgress: ${aki.progress}%`);
-        })
-        .catch(() => m.reply("Gagal memulai game. Silakan coba lagi."));
-    } 
-    break;
-
-// Case untuk kembali ke pertanyaan sebelumnya
-case "back": {
-    const aki = getSession(m.sender); // Dapatkan sesi pengguna
-    aki.cancelAnswer()
-        .then(() => {
-            m.reply(`Jawaban terakhir dibatalkan.\nPertanyaan saat ini: ${aki.question}\nProgress: ${aki.progress}%`);
-        })
-        .catch(() => m.reply("Gagal membatalkan jawaban. Silakan coba lagi."));
-    } 
-    break;
-                case 'akinator':{
-                    m.reply(".start\n.back")
-                }break;
+            switch (command) {                
                     case "search": {
     if (!msg) return m.reply("Masukkan nama anime!");
 
