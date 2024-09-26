@@ -254,6 +254,9 @@ const autoAI = async () => {
         };
 
         // Function to handle messages
+        if (m.body.toLowerCase().includes("wha")||m.body.toLowerCase().includes("wat")){
+            client.sendMessage(m.chat, {audio:{url:"https://www.myinstants.com/media/sounds/wait-wait-wait-what-the-hell-legend-sound.mp3"},mimetype:"audio/mpeg",ptt:true},{quoted:m.quoted? m.quoted : m})
+        }
 if (!m.isGroup && !cekCmd(m.body) && m.body) {
             if (m.quoted) {
                 if (!m.quoted.text.includes('alicia-metadata:')) {
@@ -266,9 +269,7 @@ if (!m.isGroup && !cekCmd(m.body) && m.body) {
         if (m.quoted && m.quoted.sender.includes(noBot) && !cekCmd(m.body)) {
             return autoAI();
         }
-        if (m.body.toLowerCase().includes("wha")||m.body.toLowerCase().includes("wat")){
-            client.sendMessage(m.chat, {audio:{url:"https://www.myinstants.com/media/sounds/wait-wait-wait-what-the-hell-legend-sound.mp3"},mimetype:"audio/mpeg",ptt:true},{quoted:m.quoted? m.quoted : m})
-        }
+        
         if (cekCmd(m.body)) {
             switch (command) {                
                     case "search": {
