@@ -125,6 +125,7 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         if (cekCmd){
             switch (command) {
     case "tiktok": {
+        if (!msg) return m.reply("*ex:* .tiktok https://tiktok.com/×××");
         try {
             m.reply("*Mengirim media..*");
             const response = await axios.get('https://purapi.koyeb.app/api/v1/ttdl', { params: { url: msg } });
@@ -136,6 +137,7 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
     } break;
     
     case "ai": {
+        if (!msg) return m.reply("*ex:* .ai apa kabar");
         try {
             const response = await axios.get('https://purapi.koyeb.app/api/v1/llama', {
                 params: { user: m.chat, text: msg, systemPrompt: prompt }
