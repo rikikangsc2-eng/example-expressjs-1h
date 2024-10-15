@@ -124,35 +124,39 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         // Command Handling Logic...
         if (cekCmd){
             switch (command) {
-                case "tiktok":{
-                    try{
-                        m.reply("*Mengirim media..*");
-                        const response = await axios.get('https://purapi.koyeb.app/api/v1/ttdl',{params:{url:msg}});
-                        const video = response.data.video[0]
-                        client.sendMessage(m.chat, {video:{url:video},mimetype:"video/mp4"},{quoted:m})
-                    }catch(e){
-                        m.reply(e.message);
-                    }
-                }break;
-                case "ai":{
-                    try {
-                const response = await axios.get('https://purapi.koyeb.app/api/v1/llama', {
-                    params: { user: m.chat, text: msg, systemPrompt: prompt }
-                });
-                const hasil = response.data.result;
-                m.reply(hasil);
-            } catch (error) {
-                console.error('Error:', error.message);
-                m.reply('Error accessing the API');
-                    }
-                }break;
-                case "menu":{
-                    m.reply(menu);
-                }break;
-                    default:{
-                    m.reply("!Printah tidak ada, Cek *.menu*");
-                    };
-            };
+    case "tiktok": {
+        try {
+            m.reply("*Mengirim media..*");
+            const response = await axios.get('https://purapi.koyeb.app/api/v1/ttdl', { params: { url: msg } });
+            const video = response.data.video[0];
+            client.sendMessage(m.chat, { video: { url: video }, mimetype: "video/mp4" }, { quoted: m });
+        } catch (e) {
+            m.reply(e.message);
+        }
+    } break;
+    
+    case "ai": {
+        try {
+            const response = await axios.get('https://purapi.koyeb.app/api/v1/llama', {
+                params: { user: m.chat, text: msg, systemPrompt: prompt }
+            });
+            const hasil = response.data.result;
+            m.reply(hasil);
+        } catch (error) {
+            console.error('Error:', error.message);
+            m.reply('Error accessing the API');
+        }
+    } break;
+
+    case "menu": {
+        m.reply(menu);
+    } break;
+
+    default: {
+        m.reply("!Perintah tidak ada, Cek *.menu*");
+    }
+}
+
         };
     } catch (err) {
         m.reply(util.format(err));
