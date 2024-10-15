@@ -122,6 +122,13 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         }
 
         // Command Handling Logic...
+        if (cekCmd){
+            switch (command) {
+                case "menu":{
+                    m.reply(menu);
+                }break;
+            };
+        };
     } catch (err) {
         m.reply(util.format(err));
     }
