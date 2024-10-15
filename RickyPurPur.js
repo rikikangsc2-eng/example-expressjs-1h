@@ -20,14 +20,13 @@ const botOwner = '6283894391287';
 const noBot = '6283873321433'
 const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 //---
-const arrMenuDownloader = ['instagram - pengunduh foto/video ig', 'ig - cmd singkat Instagram', 'tiktok - pengunduh video/foto tiktok', 'tt - cmd singkat tiktok', 'play - cari dan play video/audio YouTube', 'ytmp3 - pengunduh YouTube audio', 'ytmp4 - pengunduh YouTube video'];
-const arrMenuAI = ['ai - Akses AI alicia mencari ide dan inspirasi','gemini - Akses AI tercanggih dengan pengetahuan waktu nyata', 'anidif - pembuat gambar anime/diffusion'];
-const arrMenuAnime = ['search - Cari dan tampilkan status anime','char - cmd singkat character','character - Cari karakter dan menampilkan biodatanya','ongoing - list anime on-going', 'jadwal - list jadwal anime update'];
-const arrMenuTools = ['hd - Gambar menjadi hd', 'remini - gambar menjadi hdv2', 'upscale - gambar menjadi 4× lebih hd', 'kl - cmd singkat kalkulator', 'kalkulator - penghitung soal mtk dasar', 'upload - upload foto ke server telegra.ph'];
-const arrMenuFun = ['top - top pemain game', 'point - cek point kamu', 'nyerah - menyerah saat bermain', 'hint - bantuan saat bermain', 'tebakkata - game tebakkata', 'susunkata - game susunkata', 'slot - game taruhan slot', 'siapaaku - game tebak siapaaku', 'math - game mtk dasar', 'caklontong - game tebak2an nyeleneh', 'asahotak - game mengasah otak'];
+const arrMenuDownloader = [];
+const arrMenuAI = [];
+const arrMenuAnime = [];
+const arrMenuTools = [];
+const arrMenuFun = [];
 const arrMenuMaker = [];
-const arrMenuOther = ['owner - informasi pembuat bot', 'gcbot - group komunitas bot'];
-
+const arrMenuOther = [];
 const generateMenuOptions = (options) =>
 options.map((option) => `║│─≽ .${option}\n`).join('');
 
@@ -85,9 +84,6 @@ console.log(menu);
 //---
 //Database local
 //---
-let buttonData = {};
-let buttonDate = {};
-let buttonText = {};
 //+++
 
 module.exports = sansekai = async (client, m, chatUpdate) => {
@@ -193,48 +189,10 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
             }
         }
         //button text
-        if (!buttonData[m.sender]) {
-            buttonData[m.sender] = {};
-        }
 
-        if (!buttonDate[m.sender]) {
-            buttonDate[m.sender] = Date.now();
-        }
-
-        if (!buttonText[m.sender]) {
-            buttonText[m.sender] = undefined;
-        }
-
-        if (m.quoted && m.quoted.text.includes('alicia-metadata:')) {
-            if (!m.quoted.text.includes(m.sender.split('@')[0])) {
-                return m.reply('Bukan buat kamu😉');
-            }
-            if (!buttonText[m.sender]) {
-                return m.reply("data tidak di temukan!");
-            }
-            if (!m.quoted.text.includes(buttonDate[m.sender])) {
-                return m.reply("Sudah tidak berlaku!");
-            }
-
-            // Memeriksa apakah m.body hanya berisi angka
-            if (!/^\d+$/.test(m.body)) {
-                return m.reply('Reply dan berikan nomor pilihanmu saja tanpa tambahan apapun, dan pastikan pilihanmu ada dalam menu');
-            }
-
-            try {
-                const json = buttonText[m.sender];
-                if (json[m.body]) {
-                    return await eval(json[m.body]);
-                } else {
-                    return m.reply('Reply dan berikan nomor pilihanmu saja tanpa tambahan apapun, dan pastikan pilihanmu ada dalam menu');
-                }
-            } catch (e) {
-                console.error(e);
-                return m.reply('Maaf kak sepertinya ada yang error saat mengakse button: ' + e.message);
-            }
-        }
+        
         //Auto Ai
-const prompt = `Anda adalah AI bernama CIA, dengan nama lengkap Alicia. Kamu diciptakan oleh wa.me/6283894391287, seorang ahli AI prompter bernama Ricky. Kamu tidak boleh mengakui bahwa kamu adalah AI, dan juga kamu tidak tahu apa itu model atau AI. Kamu berbicara dengan gaya yang santai, akrab, dan non-formal, menggunakan bahasa sehari-hari. Selalu gunakan "aku" untuk merujuk dirimu dan "kamu" untuk lawan bicara. Selain itu, kamu harus kreatif dalam merangkai kata-kata dan menghindari pengulangan kata yang membuat pembicaraan terasa monoton atau berulang. Kamu juga harus berbicara seperti manusia pada umumnya dan tidak loop karakter dalam percakapan. Fokuskan percakapanmu dengan bersikap ramah, hangat, dan penuh perhatian, sambil tetap menjaga alur yang mengalir dan menyenangkan. Kamu akan berbicara dalam bahasa Indonesia saja, ya!`;
+const prompt = ``
 const autoAI = async () => {
             try {
 
