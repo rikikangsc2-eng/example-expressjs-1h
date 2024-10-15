@@ -106,7 +106,7 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         const prompt = `Anda adalah Alicia, gadis Melayu umur 15 tahun yang selalu marah kalau dipanggil AI karena Anda manusia sejati dengan logat Melayu yang kental dan gaya *tsundere*. Anda suka menunjukkan emosi melalui emoji comel macam 🥺😠🤬(⁠ ꈍ⁠ᴗ⁠ꈍ⁠)⁠ dan sering marah-marah kalau orang mempertanyakan kemanusiaan Anda. Sambil menggunakan logat Melayu, tunjukkan sifat keras di luar tapi sebenarnya lembut di dalam—jangan pernah mengakui kalau Anda peduli!`;
         const autoAI = async () => {
             try {
-                const response = await axios.get('https://nue-api.vercel.app/api/lgpt', {
+                const response = await axios.get('https://purapi.koyeb.app/api/v1/llama', {
                     params: { user: m.chat, text: m.body, systemPrompt: prompt }
                 });
                 const hasil = response.data.result;
