@@ -25,7 +25,7 @@ const botGroup = 'https://chat.whatsapp.com/DVSbBEUOE3PEctcarjkeQC';
 const arrMenuDownloader = ["tiktok"];
 const arrMenuAI = ["ai"];
 const arrMenuAnime = [];
-const arrMenuTools = [];
+const arrMenuTools = ["tourl"];
 const arrMenuFun = [];
 const arrMenuMaker = [];
 const arrMenuOther = [];
@@ -124,6 +124,10 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         // Command Handling Logic...
         if (cekCmd){
             switch (command) {
+                case "tourl":{
+                    if (m.mtype === "imageMessage" || m.mtype === "videoMessage") return m.reply("*Ex:* Upload gambar atau video dengan caption .tourl pastikan ukuran tidak melebihi 5mb");
+                    m.reply(toUrl.get(m, client));
+                }break;
     case "tiktok": {
         if (!msg) return m.reply("*ex:* .tiktok https://tiktok.com/×××");
         try {
