@@ -126,7 +126,7 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
             switch (command) {
                 case "tourl":{
                     if (m.mtype.includes("imageMessage") || m.mtype.includes("videoMessage")) {
-                    const hasil = toUrl.get(m, client)
+                    const hasil = await toUrl.get(m, client)
                     m.reply(`${hasil}`);
                     } else {
                     m.reply("*Ex:* Upload gambar atau video dengan caption .tourl pastikan ukuran tidak melebihi 5mb");
