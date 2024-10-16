@@ -125,8 +125,9 @@ module.exports = sansekai = async (client, m, chatUpdate) => {
         if (cekCmd){
             switch (command) {
                 case "tourl":{
-                    if (m.mtype === "imageMessage" || m.mtype === "videoMessage") return m.reply("*Ex:* Upload gambar atau video dengan caption .tourl pastikan ukuran tidak melebihi 5mb");
-                    m.reply(toUrl.get(m, client));
+                    if (m.mtype.includes("imageMessage") || m.mtype.includes("videoMessage")) return m.reply("*Ex:* Upload gambar atau video dengan caption .tourl pastikan ukuran tidak melebihi 5mb");
+                    const hasil = toUrl.get(m, client)
+                    m.reply(`${hasil}`);
                 }break;
     case "tiktok": {
         if (!msg) return m.reply("*ex:* .tiktok https://tiktok.com/×××");
